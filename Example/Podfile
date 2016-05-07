@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'DTParallaxScrollViewController_Example', :exclusive => true do
+  pod 'DTParallaxScrollViewController', :path => '../'
+end
+
+target 'DTParallaxScrollViewController_Tests', :exclusive => true do
+  pod 'DTParallaxScrollViewController', :path => '../'
+
+  
+end
