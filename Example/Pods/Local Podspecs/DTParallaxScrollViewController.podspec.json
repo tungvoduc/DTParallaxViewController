@@ -1,0 +1,19 @@
+{
+  "name": "DTParallaxScrollViewController",
+  "version": "0.1.0",
+  "summary": "A short description of DTParallaxScrollViewController.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/<GITHUB_USERNAME>/DTParallaxScrollViewController",
+  "license": "MIT",
+  "authors": {
+    "Tung Vo": "tung98.dn@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/<GITHUB_USERNAME>/DTParallaxScrollViewController.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "DTParallaxScrollViewController/Classes/**/*"
+}

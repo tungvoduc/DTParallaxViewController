@@ -1,0 +1,14 @@
+PODS:
+  - DTParallaxScrollViewController (0.1.0)
+
+DEPENDENCIES:
+  - DTParallaxScrollViewController (from `../`)
+
+EXTERNAL SOURCES:
+  DTParallaxScrollViewController:
+    :path: ../
+
+SPEC CHECKSUMS:
+  DTParallaxScrollViewController: 0c03b608e21c4a488b51beaeb7b9e070e63ba748
+
+COCOAPODS: 0.39.0
