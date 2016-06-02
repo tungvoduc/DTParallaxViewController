@@ -17,9 +17,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         let viewController = ViewController()
+        viewController.title = "Example"
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.navigationBar.translucent = false
+        
+        let tabbarController = UITabBarController()
+        tabbarController.viewControllers = [navigationController]
+        //tabbarController.tabBar.translucent = false
+        
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window?.makeKeyAndVisible()
-        window?.rootViewController = viewController
+        window?.rootViewController = tabbarController
         return true
     }
 

@@ -108,7 +108,22 @@ public class DTParallaxScrollViewController: UIViewController, UIScrollViewDeleg
     public override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Set frame for _parallaxScrollView
         _parallaxScrollView.frame = self.view.bounds
+        
+        if let navigationController = self.navigationController {
+            _parallaxScrollView.frame.size.height -= (navigationController.navigationBar.translucent == false) ? navigationController.navigationBar.frame.height : 0
+            
+            if !UIApplication.sharedApplication().statusBarHidden && navigationController.navigationBar.translucent == false {
+                _parallaxScrollView.frame.size.height -= 20
+            }
+        }
+        
+        if let tabBarController = self.tabBarController {
+            _parallaxScrollView.frame.size.height -= (tabBarController.tabBar.translucent == false) ? tabBarController.tabBar.frame.height : 0
+        }
+        
+        
         self.view.addSubview(_parallaxScrollView)
     }
 }
