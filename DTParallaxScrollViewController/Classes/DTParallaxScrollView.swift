@@ -103,6 +103,7 @@ public class DTParallaxScrollView: UIScrollView, UIScrollViewDelegate {
         // Add KVO for _externalScrollView, keypath contentSize so we can update content size
         // of _internalScrollView whenever it needs to change.
         _externalScrollView.addObserver(self, forKeyPath: "contentSize", options: NSKeyValueObservingOptions.New, context: nil)
+        _externalScrollView.addObserver(self, forKeyPath: "contentInset", options: NSKeyValueObservingOptions.New, context: nil)
         
         // Add KVO for frame
         self.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions.New, context: nil)
@@ -129,14 +130,9 @@ public class DTParallaxScrollView: UIScrollView, UIScrollViewDelegate {
     ///
     public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if object === _externalScrollView {
-            if keyPath == "contentSize" {
-                
-                if let number = change?[NSKeyValueChangeNewKey] as? NSValue {
-                    let height = number.CGSizeValue().height
-                    //Update content size of _internalScrollView
-                    self.contentSize = CGSize(width: 0, height: height + headerHeight)
-                    
-                }
+            if keyPath == "contentSize" || keyPath == "contentInset" {
+                //Update content size of _internalScrollView based on contentSize and contentInset of _externalScrollView
+                self.contentSize = CGSize(width: 0, height: _externalScrollView.contentSize.height + headerHeight + _externalScrollView.contentInset.top + _externalScrollView.contentInset.bottom)
             }
         }
         else if object === self {
@@ -158,8 +154,8 @@ extension DTParallaxScrollView {
             // Make update so that scroll view is always on top
             _externalScrollView.frame.origin.y = scrollView.contentOffset.y
             
-            // Make update content offset
-            _externalScrollView.contentOffset.y = scrollView.contentOffset.y - headerHeight
+            // Make update content offset, should also consider the contentInset
+            _externalScrollView.contentOffset.y = scrollView.contentOffset.y - headerHeight - _externalScrollView.contentInset.top
             updateBlock?(scrollView.contentOffset.y, false)
         }
         else {
@@ -170,7 +166,8 @@ extension DTParallaxScrollView {
             
             //Reset content offset
             if _externalScrollView.contentOffset.y != 0 {
-                _externalScrollView.contentOffset.y = 0
+                // Should also consider the contentInset
+                _externalScrollView.contentOffset.y = -_externalScrollView.contentInset.top
             }
             
             updateBlock?(scrollView.contentOffset.y, true)
