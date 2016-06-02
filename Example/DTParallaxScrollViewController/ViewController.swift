@@ -26,6 +26,7 @@ class ViewController: DTParallaxScrollViewController, UITableViewDataSource {
         _tableView.dataSource = self
         _tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         self.delegate = self
+        self.parallaxScrollView.backgroundColor = UIColor.purpleColor()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -36,6 +37,8 @@ class ViewController: DTParallaxScrollViewController, UITableViewDataSource {
         super.viewDidLoad()
         
         _mapView.frame = CGRect(x: 0, y: -100, width: self.view.frame.width, height: kHeaderHeight + 200)
+        // Test content inset
+        //_tableView.contentInset = UIEdgeInsets(top: 100, left: 0, bottom: 100, right: 0)
         
         self.updateBlock = {(yOffset: CGFloat, visible: Bool) -> Void in
             if yOffset < 0 {
