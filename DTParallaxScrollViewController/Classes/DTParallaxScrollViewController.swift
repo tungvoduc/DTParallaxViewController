@@ -11,11 +11,11 @@ import UIKit
 ///
 /// Class DTParallaxScrollViewController
 ///
-public class DTParallaxScrollViewController: UIViewController, UIScrollViewDelegate {
+open class DTParallaxScrollViewController: UIViewController, UIScrollViewDelegate {
     ///
     /// Delegate
     ///
-    public weak var delegate: DTParallaxScrollViewDelegate? {
+    open weak var delegate: DTParallaxScrollViewDelegate? {
         //Remove old header view before adding new one
         set {
             _parallaxScrollView.parallaxDelegate = newValue
@@ -30,8 +30,8 @@ public class DTParallaxScrollViewController: UIViewController, UIScrollViewDeleg
     /// Parallax scroll view
     /// Note: parallaxScrollView access could be removed in the future.
     ///
-    private var _parallaxScrollView: DTParallaxScrollView!
-    public var parallaxScrollView: DTParallaxScrollView! {
+    fileprivate var _parallaxScrollView: DTParallaxScrollView!
+    open var parallaxScrollView: DTParallaxScrollView! {
         return _parallaxScrollView
     }
     
@@ -39,7 +39,7 @@ public class DTParallaxScrollViewController: UIViewController, UIScrollViewDeleg
     /// Header height
     /// Default value is 100.
     ///
-    public var headerHeight: CGFloat {
+    open var headerHeight: CGFloat {
         set {
             //Update after setting new header height
             _parallaxScrollView.headerHeight = newValue
@@ -55,13 +55,13 @@ public class DTParallaxScrollViewController: UIViewController, UIScrollViewDeleg
     /// scrollEnabled should not be set to true for DTParallaxScrollViewController to work properly.
     /// The only way to set external scroll view is via initializer so it is safe here.
     ///
-    private var _externalScrollView: UIScrollView! {
+    fileprivate var _externalScrollView: UIScrollView! {
         didSet {
-            _parallaxScrollView = DTParallaxScrollView(frame: CGRectZero, scrollView: _externalScrollView)
+            _parallaxScrollView = DTParallaxScrollView(frame: CGRect.zero, scrollView: _externalScrollView)
         }
     }
     
-    public var externalScrollView: UIScrollView! {
+    open var externalScrollView: UIScrollView! {
         return _externalScrollView
     }
     
@@ -70,7 +70,7 @@ public class DTParallaxScrollViewController: UIViewController, UIScrollViewDeleg
     /// CGFloat is vertical offet of internal scroll view.
     /// Bool indicates if header view is visible from scroll view.
     ///
-    public var updateBlock: ((CGFloat, Bool) -> Void)? {
+    open var updateBlock: ((CGFloat, Bool) -> Void)? {
         set {
             _parallaxScrollView.updateBlock = newValue
         }
@@ -100,27 +100,27 @@ public class DTParallaxScrollViewController: UIViewController, UIScrollViewDeleg
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func _commonInit(scrollView: UIScrollView) {
+    fileprivate func _commonInit(_ scrollView: UIScrollView) {
         _externalScrollView = scrollView
     }
     
     //MARK: UIViewController
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         // Set frame for _parallaxScrollView
         _parallaxScrollView.frame = self.view.bounds
         
         if let navigationController = self.navigationController {
-            _parallaxScrollView.frame.size.height -= (navigationController.navigationBar.translucent == false) ? navigationController.navigationBar.frame.height : 0
+            _parallaxScrollView.frame.size.height -= (navigationController.navigationBar.isTranslucent == false) ? navigationController.navigationBar.frame.height : 0
             
-            if !UIApplication.sharedApplication().statusBarHidden && navigationController.navigationBar.translucent == false {
+            if !UIApplication.shared.isStatusBarHidden && navigationController.navigationBar.isTranslucent == false {
                 _parallaxScrollView.frame.size.height -= 20
             }
         }
         
         if let tabBarController = self.tabBarController {
-            _parallaxScrollView.frame.size.height -= (tabBarController.tabBar.translucent == false) ? tabBarController.tabBar.frame.height : 0
+            _parallaxScrollView.frame.size.height -= (tabBarController.tabBar.isTranslucent == false) ? tabBarController.tabBar.frame.height : 0
         }
         
         

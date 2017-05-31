@@ -12,17 +12,17 @@ import Foundation
 /// Protocol DTParallaxScrollViewControllerDelegate
 ///
 public protocol DTParallaxScrollViewDelegate: class {
-    func parallaxScrollViewViewForHeader(view: DTParallaxScrollView) -> UIView
+    func parallaxScrollViewViewForHeader(_ view: DTParallaxScrollView) -> UIView
 }
 
 ///
 /// Class DTParallaxScrollView
 ///
-public class DTParallaxScrollView: UIScrollView, UIScrollViewDelegate {
+open class DTParallaxScrollView: UIScrollView, UIScrollViewDelegate {
     ///
     /// Delegate
     ///
-    public weak var parallaxDelegate: DTParallaxScrollViewDelegate? {
+    open weak var parallaxDelegate: DTParallaxScrollViewDelegate? {
         //Remove old header view before adding new one
         willSet {
             if let headerView = parallaxDelegate?.parallaxScrollViewViewForHeader(self) {
@@ -34,7 +34,7 @@ public class DTParallaxScrollView: UIScrollView, UIScrollViewDelegate {
         didSet {
             if delegate !== oldValue {
                 if let headerView = parallaxDelegate?.parallaxScrollViewViewForHeader(self) {
-                    self.insertSubview(headerView, atIndex: 0)
+                    self.insertSubview(headerView, at: 0)
                 }
             }
         }
@@ -45,13 +45,13 @@ public class DTParallaxScrollView: UIScrollView, UIScrollViewDelegate {
     /// CGFloat is vertical offet of internal scroll view.
     /// Bool indicates if header view is visible from scroll view.
     ///
-    public var updateBlock: ((CGFloat, Bool) -> Void)?
+    open var updateBlock: ((CGFloat, Bool) -> Void)?
     
     ///
     /// Header height
     /// Default value is 100.
     ///
-    public var headerHeight: CGFloat = 100 {
+    open var headerHeight: CGFloat = 100 {
         didSet {
             //Update after setting new header height
         }
@@ -61,9 +61,9 @@ public class DTParallaxScrollView: UIScrollView, UIScrollViewDelegate {
     /// External scroll view
     /// scrollEnabled should not be set to true for DTParallaxScrollViewController to work properly.
     ///
-    private var _externalScrollView: UIScrollView!
+    fileprivate var _externalScrollView: UIScrollView!
     
-    public var externalScrollView: UIScrollView! {
+    open var externalScrollView: UIScrollView! {
         return _externalScrollView
     }
     
@@ -84,7 +84,7 @@ public class DTParallaxScrollView: UIScrollView, UIScrollViewDelegate {
         _commonInit()
     }
     
-    private override init(frame: CGRect) {
+    fileprivate override init(frame: CGRect) {
         super.init(frame: frame)
     }
     
@@ -95,18 +95,18 @@ public class DTParallaxScrollView: UIScrollView, UIScrollViewDelegate {
     ///
     /// Common initializer
     ///
-    private func _commonInit() {
-        _externalScrollView.scrollEnabled = false
+    fileprivate func _commonInit() {
+        _externalScrollView.isScrollEnabled = false
         self.addSubview(_externalScrollView)
         self.delegate = self
         
         // Add KVO for _externalScrollView, keypath contentSize so we can update content size
         // of _internalScrollView whenever it needs to change.
-        _externalScrollView.addObserver(self, forKeyPath: "contentSize", options: NSKeyValueObservingOptions.New, context: nil)
-        _externalScrollView.addObserver(self, forKeyPath: "contentInset", options: NSKeyValueObservingOptions.New, context: nil)
+        _externalScrollView.addObserver(self, forKeyPath: "contentSize", options: NSKeyValueObservingOptions.new, context: nil)
+        _externalScrollView.addObserver(self, forKeyPath: "contentInset", options: NSKeyValueObservingOptions.new, context: nil)
         
         // Add KVO for frame
-        self.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions.New, context: nil)
+        self.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions.new, context: nil)
         
         _updateExternalScrollPosition()
     }
@@ -119,7 +119,7 @@ public class DTParallaxScrollView: UIScrollView, UIScrollViewDelegate {
     ///
     /// Helper method to update correct frame of _externalScrollView
     ///
-    private func _updateExternalScrollPosition() {
+    fileprivate func _updateExternalScrollPosition() {
         var frame = self.bounds
         frame.origin.y = self.headerHeight
         _externalScrollView.frame = frame
@@ -128,17 +128,19 @@ public class DTParallaxScrollView: UIScrollView, UIScrollViewDelegate {
     ///
     /// Handle contentSize change.
     ///
-    public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if object === _externalScrollView {
-            if keyPath == "contentSize" || keyPath == "contentInset" {
-                //Update content size of _internalScrollView based on contentSize and contentInset of _externalScrollView
-                self.contentSize = CGSize(width: 0, height: _externalScrollView.contentSize.height + headerHeight + _externalScrollView.contentInset.top + _externalScrollView.contentInset.bottom)
+    open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if let scrollView = object as? UIScrollView {
+            if scrollView == _externalScrollView {
+                if keyPath == "contentSize" || keyPath == "contentInset" {
+                    //Update content size of _internalScrollView based on contentSize and contentInset of _externalScrollView
+                    self.contentSize = CGSize(width: 0, height: _externalScrollView.contentSize.height + headerHeight + _externalScrollView.contentInset.top + _externalScrollView.contentInset.bottom)
+                }
             }
-        }
-        else if object === self {
-            if keyPath == "frame" {
-                //Update frame of external scroll view
-                _updateExternalScrollPosition()
+            else if scrollView == self {
+                if keyPath == "frame" {
+                    //Update frame of external scroll view
+                    _updateExternalScrollPosition()
+                }
             }
         }
     }
@@ -146,7 +148,7 @@ public class DTParallaxScrollView: UIScrollView, UIScrollViewDelegate {
 
 //MARK: UIScrollViewDelegate
 extension DTParallaxScrollView {
-    public func scrollViewDidScroll(scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // If scroll view scrolls over header height space
         // external scroll view y-position has to be updates
         // for every scroll

@@ -17,16 +17,16 @@ private let kHeaderHeight: CGFloat = 200
 /// Class ViewController.
 ///
 class ViewController: DTParallaxScrollViewController, UITableViewDataSource {
-    private let _tableView: UITableView = UITableView(frame: CGRectZero)
-    private let _mapView = MKMapView()
+    fileprivate let _tableView: UITableView = UITableView(frame: CGRect.zero)
+    fileprivate let _mapView = MKMapView()
     
     init() {
         super.init(scrollView: _tableView, headerHeight: kHeaderHeight)
         //_tableView.delegate = self
         _tableView.dataSource = self
-        _tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+        _tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         self.delegate = self
-        self.parallaxScrollView.backgroundColor = UIColor.purpleColor()
+        self.parallaxScrollView.backgroundColor = UIColor.purple
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -43,10 +43,10 @@ class ViewController: DTParallaxScrollViewController, UITableViewDataSource {
         self.updateBlock = {(yOffset: CGFloat, visible: Bool) -> Void in
             if yOffset < 0 {
                 let scaleFactor = 1 + abs(yOffset/self.headerHeight)
-                self._mapView.transform = CGAffineTransformMakeScale(scaleFactor, scaleFactor)
+                self._mapView.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
             }
             else {
-                self._mapView.transform = CGAffineTransformIdentity
+                self._mapView.transform = CGAffineTransform.identity
             }
         }
         // Do any additional setup after loading the view, typically from a nib.
@@ -60,12 +60,12 @@ class ViewController: DTParallaxScrollViewController, UITableViewDataSource {
 
 //MARK: UITableViewDataSource
 extension ViewController {
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 100
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
         cell.textLabel?.text = "Hello I am row number \(indexPath.row)"
         return cell
     }
@@ -73,13 +73,13 @@ extension ViewController {
 
 //MARK: DTParallaxScrollViewDelegate
 extension ViewController: DTParallaxScrollViewDelegate {
-    func parallaxScrollViewViewForHeader(viewController: DTParallaxScrollView) -> UIView {
+    func parallaxScrollViewViewForHeader(_ viewController: DTParallaxScrollView) -> UIView {
         return _mapView
     }
 }
 
 extension ViewController {
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
 }
